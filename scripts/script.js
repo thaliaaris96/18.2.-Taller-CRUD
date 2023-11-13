@@ -1,6 +1,19 @@
 document.addEventListener("DOMContentLoaded", function () {
     let inpBuscar = document.getElementById("inputGet1Id");
     let btnBuscar = document.getElementById("btnGet1");
+
+    function mostrarAlertaError() {
+        // Crear un elemento de alerta Bootstrap
+        let alerta = document.createElement("div");
+        alerta.className = "alert alert-danger";
+        alerta.textContent = "Algo salió mal";
+        
+        // Agregar el elemento de alerta al DOM
+        let resultado = document.getElementById("results");
+        resultado.innerHTML = ''; // Limpiar contenido anterior
+        resultado.appendChild(alerta);
+    }
+
     btnBuscar.addEventListener("click", function () {
         fetch(`https://654235e1f0b8287df1ffb39a.mockapi.io/users/${inpBuscar.value}`,
             {
@@ -19,7 +32,7 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(data => {
                 console.log(data);
                 let resultado = document.getElementById("results");
-
+    
                 if (inpBuscar.value === "") {
                     let auxHTML = "";
                     if (Array.isArray(data)) {
@@ -37,20 +50,25 @@ document.addEventListener("DOMContentLoaded", function () {
                         resultado.innerHTML = auxHTML;
                     }
                 } else {
-                      if (data != undefined && data.id != undefined) {
+                    if (data != undefined && data.id != undefined) {
                         resultado.innerHTML = `
                             ID: ${data.id} <br>
                             Nombre: ${data.name} <br>
                             Apellido: ${data.lastname}
                         `;
                     } else {
-                        alert("Algo salio mal")
+                        // Llamar a la función aquí en caso de error
+                        mostrarAlertaError();
                     }
                 }
             })
             .catch(function (error) {
+                let resultado = document.getElementById("results");
                 if (error.message === "No existe tal persona") {
                     resultado.innerHTML = "Esa persona no existe";
+                } else {
+                    // Llamar a la función aquí en caso de error
+                    mostrarAlertaError();
                 }
             });
     });
